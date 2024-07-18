@@ -1,6 +1,6 @@
 
 HOSTS = [
-    'http://node1.example.com',
-    'http://node2.example.com',
-    'http://node3.example.com',
+    'http://localhost:8000',
+    'http://localhost:8001',
+    'http://localhost:8002',
 ]
