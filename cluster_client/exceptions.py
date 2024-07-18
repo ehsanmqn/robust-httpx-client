@@ -39,3 +39,13 @@ class TimeoutErrorException(Exception):
         message = f'Timeout occurred on {host}'
         self.message = message
         super().__init__(self.message)
+
+
+class RequestErrorException(Exception):
+    """
+    Custom exception for request errors.
+    """
+
+    def __init__(self, host, message):
+        self.message = f'Request error on {host}: {message}'
+        super().__init__(self.message)
