@@ -19,7 +19,7 @@ async def test_create_group_on_host_success():
     mock_response.status_code = 201
 
     with mock.patch.object(httpx.AsyncClient, 'post', return_value=mock_response):
-        result = await client._create_group_on_host(httpx.AsyncClient(), 'http://node1.example.com', 'test_group')
+        result = await client._create_group_on_host(httpx.AsyncClient(), HOSTS[0], 'test_group')
         assert result is True
 
 
@@ -31,7 +31,7 @@ async def test_create_group_on_host_failure_status_code():
     mock_response.status_code = 400
 
     with mock.patch.object(httpx.AsyncClient, 'post', return_value=mock_response):
-        result = await client._create_group_on_host(httpx.AsyncClient(), 'http://node1.example.com', 'test_group')
+        result = await client._create_group_on_host(httpx.AsyncClient(), HOSTS[0], 'test_group')
         assert result is False
 
 
@@ -40,7 +40,7 @@ async def test_create_group_on_host_request_error():
     client = ClusterClient()
 
     with mock.patch.object(httpx.AsyncClient, 'post', side_effect=RequestError('Request failed')):
-        result = await client._create_group_on_host(httpx.AsyncClient(), 'http://node1.example.com', 'test_group')
+        result = await client._create_group_on_host(httpx.AsyncClient(), HOSTS[0], 'test_group')
         assert result is False
 
 
