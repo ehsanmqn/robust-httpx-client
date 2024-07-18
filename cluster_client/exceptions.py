@@ -28,3 +28,14 @@ class ThrottleErrorException(Exception):
         message = f'Throttling error on {host}: {status_code}'
         self.message = message
         super().__init__(self.message)
+
+
+class TimeoutErrorException(Exception):
+    """
+    Custom exception for timeout errors.
+    """
+
+    def __init__(self, host):
+        message = f'Timeout occurred on {host}'
+        self.message = message
+        super().__init__(self.message)
