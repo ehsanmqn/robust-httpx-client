@@ -59,7 +59,8 @@ class ClusterClient:
 
         logger.info('Rolling back creation on successful hosts...')
         for host in success_hosts:
-            await self._delete_group_on_host(client, host, group_id)
+            if not await self._delete_group_on_host(client, host, group_id):
+                logger.error(f'Failed to rollback creation on {host}')
 
     async def create_group(self, group_id: str) -> bool:
         """
