@@ -17,15 +17,15 @@ class ClusterClient:
 
         url = f'{host}/v1/group/'
         try:
-            response = await client.post(url, json={'groupId': group_id})
+            response = await client.post(url, json={'groupId': group_id}, timeout=10.0)
             if response.status_code == 201:
                 logger.info(f'Group {group_id} created on {host}')
                 return True
-
             logger.error(f'Failed to create group on {host}: {response.status_code}')
-
+        except httpx.TimeoutException:
+            logger.error(f'Timeout occurred while creating group on {host}')
         except httpx.RequestError as exc:
-            logger.error(f'Request error occurred: {exc}')
+            logger.error(f'Request error occurred while creating group on {host}: {exc}')
 
         return False
 
@@ -38,13 +38,11 @@ class ClusterClient:
         try:
             # httpx allows sending json parameters only through the request method not the delete method since it's discouraged
             # Ref: https://github.com/encode/httpx/discussions/1587
-            response = await client.request(method='DELETE', url=url, json={'groupId': group_id})
+            response = await client.request(method='DELETE', url=url, json={'groupId': group_id}, timeout=10.0)
             if response.status_code == 200:
                 logger.info(f'Group {group_id} deleted from {host}')
                 return True
-
             logger.error(f'Failed to delete group on {host}: {response.status_code}')
-
         except httpx.RequestError as exc:
             logger.error(f'Request error occurred: {exc}')
 
@@ -72,7 +70,6 @@ class ClusterClient:
                     if not await self._create_group_on_host(client, host, group_id):
                         raise GroupOperationException(f'Failed to create group on {host}, initiating rollback.')
                     success_hosts.append(host)
-
             except GroupOperationException as e:
                 logger.error(f'Error during creation: {e}')
                 await self._rollback_creation(client, group_id, success_hosts)
