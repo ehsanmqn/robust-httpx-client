@@ -3,7 +3,7 @@ import logging
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 from .config import HOSTS
-from .exceptions import GroupOperationException
+from .exceptions import GroupOperationException, ServerErrorException, ThrottleErrorException
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ class ClusterClient:
     def __init__(self, hosts=HOSTS):
         self.hosts = hosts
 
-    @retry(retry=retry_if_exception_type(httpx.RequestError), stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10))
+    @retry(retry=(retry_if_exception_type(ServerErrorException) | retry_if_exception_type(ThrottleErrorException)), stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10))
     async def _create_group_on_host(self, client: httpx.AsyncClient, host: str, group_id: str) -> bool:
         """
         Create a group on a specific host.
