@@ -1,9 +1,10 @@
 import pytest
 import httpx
-from httpx import Response, RequestError
+from httpx import Response, RequestError, TimeoutException
 from cluster_client.client import ClusterClient
 from unittest import mock
 from cluster_client.config import HOSTS
+from cluster_client.exceptions import RequestErrorException
 
 
 @pytest.fixture
@@ -40,8 +41,8 @@ async def test_create_group_on_host_request_error():
     client = ClusterClient()
 
     with mock.patch.object(httpx.AsyncClient, 'post', side_effect=RequestError('Request failed')):
-        result = await client._create_group_on_host(httpx.AsyncClient(), HOSTS[0], 'test_group')
-        assert result is False
+        with pytest.raises(RequestErrorException):
+            await client._create_group_on_host(httpx.AsyncClient(), HOSTS[0], 'test_group')
 
 
 @pytest.mark.asyncio
@@ -73,8 +74,8 @@ async def test_delete_group_on_host_request_error():
     client = ClusterClient()
 
     with mock.patch.object(httpx.AsyncClient, 'request', side_effect=RequestError('Request failed')):
-        result = await client._delete_group_on_host(httpx.AsyncClient(), HOSTS[0], 'test_group')
-        assert result is False
+        with pytest.raises(RequestErrorException):
+            await client._delete_group_on_host(httpx.AsyncClient(), HOSTS[0], 'test_group')
 
 
 @pytest.mark.asyncio
@@ -90,5 +91,4 @@ async def test_delete_group(mock_async_client):
     client = ClusterClient(hosts=HOSTS)
 
     result = await client.delete_group('test_group')
-
     assert result is True
