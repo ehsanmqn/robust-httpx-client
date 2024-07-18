@@ -1,6 +1,5 @@
 import httpx
 import logging
-from exceptions import GroupOperationException
 from .config import HOSTS
 
 logger = logging.getLogger(__name__)
