@@ -8,35 +8,13 @@ class GroupOperationException(Exception):
         super().__init__(self.message)
 
 
-class ServerErrorException(Exception):
-    """
-    Custom exception for server errors (HTTP 500-599).
-    """
-
-    def __init__(self, host, status_code):
-        message = f'Server error on {host}: {status_code}'
-        self.message = message
-        super().__init__(self.message)
-
-
-class ThrottleErrorException(Exception):
-    """
-    Custom exception for throttling errors (HTTP 429).
-    """
-
-    def __init__(self, host, status_code):
-        message = f'Throttling error on {host}: {status_code}'
-        self.message = message
-        super().__init__(self.message)
-
-
-class TimeoutErrorException(Exception):
+class ClusterOperationException(Exception):
     """
     Custom exception for timeout errors.
     """
 
-    def __init__(self, host):
-        message = f'Timeout occurred on {host}'
+    def __init__(self, host, status_code):
+        message = f'Error occurred on {host}: {status_code}'
         self.message = message
         super().__init__(self.message)
 

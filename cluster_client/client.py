@@ -5,7 +5,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_excep
 from .config import HOSTS
 from .exceptions import (
     GroupOperationException,
-    HandleableErrorException,
+    ClusterOperationException,
     RequestErrorException
 )
 
@@ -17,7 +17,7 @@ class ClusterClient:
         self.hosts = hosts
 
     @retry(
-        retry=retry_if_exception_type(HandleableErrorException),
+        retry=retry_if_exception_type(ClusterOperationException),
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10)
     )
@@ -29,13 +29,13 @@ class ClusterClient:
         url = f'{host}/v1/group/'
 
         try:
-            response = await client.post(url, json={'groupId': group_id}, timeout=10.0)
+            response = await client.post(url, json={'groupId': group_id}, timeout=10)
             if response.status_code == 201:
                 logger.info(f'Group {group_id} created on {host}')
                 return True
             elif response.status_code == 429 or 500 <= response.status_code < 600:
                 logger.warning(f'Error {response.status_code} while creating group on {host}')
-                raise HandleableErrorException(host, response.status_code)
+                raise ClusterOperationException(host, response.status_code)
             else:
                 logger.error(f'Failed to create group on {host}: {response.status_code}')
                 return False
@@ -45,7 +45,7 @@ class ClusterClient:
             raise RequestErrorException(host, str(exc))
 
     @retry(
-        retry=retry_if_exception_type(HandleableErrorException),
+        retry=retry_if_exception_type(ClusterOperationException),
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10)
     )
@@ -57,13 +57,13 @@ class ClusterClient:
         url = f'{host}/v1/group/'
 
         try:
-            response = await client.request(method='DELETE', url=url, json={'groupId': group_id}, timeout=10.0)
+            response = await client.request(method='DELETE', url=url, json={'groupId': group_id}, timeout=10)
             if response.status_code == 200:
                 logger.info(f'Group {group_id} deleted from {host}')
                 return True
             elif response.status_code == 429 or 500 <= response.status_code < 600:
                 logger.warning(f'Error {response.status_code} while deleting group on {host}')
-                raise HandleableErrorException(host, response.status_code)
+                raise ClusterOperationException(host, response.status_code)
             else:
                 logger.error(f'Failed to delete group on {host}: {response.status_code}')
                 return False
