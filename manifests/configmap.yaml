@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: robust-httpx-client-config
+data:
+  APP_ENV: "production"
+  LOG_LEVEL: "info"
+  HOSTS: "http://localhost:8000,http://localhost:8001,http://localhost:8002"

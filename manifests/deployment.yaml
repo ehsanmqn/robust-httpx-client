@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: robust-httpx-client-deployment
+  labels:
+    app: robust-httpx-client
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: robust-httpx-client
+  template:
+    metadata:
+      labels:
+        app: robust-httpx-client
+    spec:
+      containers:
+      - name: robust-httpx-client
+        image: robust-httpx-client:latest  # Replace with your image name and tag
+        envFrom:
+        - configMapRef:
+            name: robust-httpx-client-config  # Reference to the ConfigMap
