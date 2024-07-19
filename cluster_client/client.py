@@ -153,6 +153,7 @@ class ClusterClient:
         """
         Delete a group from all cluster nodes.
         """
+
         async with httpx.AsyncClient() as client:
             for host in self.hosts:
                 await self._delete_group_on_host(client, host, group_id)
