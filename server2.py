@@ -1,15 +1,23 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+import random
 from urllib.parse import urlparse, parse_qs
 
 # Sample data structure to store groups
 groups = []
 
-
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == '/v1/group/':
+            if random.random() < 0.20:
+                self.send_response(400)  # Bad Request
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                response = {'message': 'Random error occurred'}
+                self.wfile.write(json.dumps(response).encode('utf-8'))
+                return
+
             try:
                 content_length = int(self.headers['Content-Length'])
                 post_data = self.rfile.read(content_length)
@@ -47,6 +55,14 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_DELETE(self):
         if self.path.startswith('/v1/group/'):
+            if random.random() < 0.20:
+                self.send_response(400)  # Bad Request
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                response = {'message': 'Random error occurred'}
+                self.wfile.write(json.dumps(response).encode('utf-8'))
+                return
+
             try:
                 content_length = int(self.headers['Content-Length'])
                 delete_data = self.rfile.read(content_length)
