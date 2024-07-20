@@ -14,7 +14,7 @@ async def main():
     if await client.create_group(group_id):
         logger.info('Group created successfully on all nodes.')
     else:
-        logger.info('Group creation failed and rolled back.')
+        logger.info('Group creation failed.')
 
     # Delete group
     await client.delete_group(group_id)
