@@ -189,7 +189,7 @@ class ClusterClient:
                         logger.warning(f'Deletion failed on host {host}')
                         continue
                     undeleted_hosts.remove(host)
-                except httpx.RequestError as e:
+                except Exception as e:
                     logger.error(f'Error during deletion on host {host}: {e}')
                     continue
 
