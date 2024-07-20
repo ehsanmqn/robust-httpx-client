@@ -8,17 +8,6 @@ class GroupOperationException(Exception):
         super().__init__(self.message)
 
 
-class ClusterOperationException(Exception):
-    """
-    Custom exception for timeout errors.
-    """
-
-    def __init__(self, host, status_code):
-        message = f'Error occurred on {host}: {status_code}'
-        self.message = message
-        super().__init__(self.message)
-
-
 class RequestErrorException(Exception):
     """
     Custom exception for request errors.
