@@ -5,7 +5,7 @@ metadata:
   labels:
     app: robust-httpx-client
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: robust-httpx-client
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: robust-httpx-client
-        image: robust-httpx-client:latest  # Replace with your image name and tag
+        image: ehsanmgh/robust-httpx-client:latest
         envFrom:
         - configMapRef:
-            name: robust-httpx-client-config  # Reference to the ConfigMap
+            name: robust-httpx-client-config
