@@ -96,7 +96,7 @@ To build and run Docker image, you would typically use the following commands:
 docker build -t robust-httpx-client .
 
 # Run the Docker container
-sudo docker run --network="host" -it --rm robust-httpx-client
+docker run --network="host" -it --rm robust-httpx-client
 ```
 
 ## Regarding the implementation
