@@ -19,8 +19,7 @@ pip install -r requirements.txt
 
 ## Configuration
 
-The class uses a list of host URLs from the configuration module or environment variables. Ensure that HOSTS is defined in the configuration module or set as an environment variable containing a list of cluster node URLs.
-
+The class utilizes a list of host URLs, sourced from either the configuration module or environment variables. While it is feasible to pass these URLs as arguments to the ClusterClient class, I opted to define them in the configuration since this information seldom changes. Ensure that HOSTS is defined within the configuration module or set as an environment variable containing a list of cluster node URLs.
 Define as environment variables:
 ```bash
 export HOSTS="http://node1.example.com,http://node2.example.com,http://node3.example.com"
