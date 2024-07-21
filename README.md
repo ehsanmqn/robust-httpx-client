@@ -99,6 +99,31 @@ docker build -t robust-httpx-client .
 docker run --network="host" -it --rm robust-httpx-client
 ```
 
+## Running Tests
+
+To ensure that the `ClusterClient` class functions correctly, there have been provided unit tests and concurrency tests using `pytest`. Follow the instructions below to execute these tests:
+
+### Unit Tests
+
+To run the unit tests for `ClusterClient`, execute the following command:
+
+```bash
+# Run unit tests
+pytest -s tests/test_client.py 
+```
+
+### Concurrency Tests
+
+To run the concurrency tests, which check the behavior of the `ClusterClient` under concurrent scenarios, execute the following command:
+
+```bash
+# Run concurrency tests
+pytest -s tests/test_concurrency.py
+```
+
+These commands will execute the tests and provide detailed output, helping you verify that the `ClusterClient` handles various scenarios and exceptions appropriately, including retries, error handling, and concurrency issues.
+
+
 ## Regarding the implementation
 
 This code does embody the principles of the Eventual Consistency with Retry Mechanism design pattern. Let's break down how it fits into this pattern:
