@@ -17,13 +17,6 @@ To use the `ClusterClient`, you need to have `httpx` and `tenacity` installed. Y
 pip install -r requirements.txt
 ```
 
-## Configuration
-
-The class utilizes a list of host URLs, sourced from either the configuration module or environment variables. While it is feasible to pass these URLs as arguments to the ClusterClient class, I opted to define them in the configuration since this information seldom changes. Ensure that HOSTS is defined within the configuration module or set as an environment variable containing a list of cluster node URLs.
-Define as environment variables:
-```bash
-export HOSTS="http://node1.example.com,http://node2.example.com,http://node3.example.com"
-```
 ## Usage
 
 ### Initialization
@@ -34,6 +27,26 @@ Create an instance of the `ClusterClient`:
 from cluster_client import ClusterClient
 
 client = ClusterClient()
+```
+
+### Configuration
+
+The class accepts a list of host URLs as an input argument. Alternatively, you can provide these URLs through the configuration module or environment variables. Make sure that HOSTS is either defined in the configuration module or set as an environment variable with a list of cluster node URLs.
+
+Provide them as class input:
+```python
+hosts = [
+            'http://localhost:8000',
+            'http://localhost:8001',
+            'http://localhost:8002',
+        ]
+
+client = ClusterClient(hosts=hosts)
+```
+
+Define as environment variables:
+```bash
+export HOSTS="http://node1.example.com,http://node2.example.com,http://node3.example.com"
 ```
 
 ### Creating a Group
