@@ -2,6 +2,12 @@
 
 The `ClusterClient` is a Python class designed to manage group creation and deletion across multiple cluster nodes. It uses asynchronous HTTP requests to perform operations on cluster nodes and includes robust retry mechanisms with exponential backoff to handle transient errors.
 
+The coding challenge has been implemented in two versions:
+
+- **This repository:** Implemented according to principles of the Eventual Consistency with Retry Mechanism design pattern and includes all coding challenge requirements, such as unit tests, a Dockerfile, and K8s manifests.
+- **[Saga version](https://github.com/ehsanmqn/saga-httpx-client):** Utilizes the Saga design pattern.
+
+
 ## Features
 
 - **Group Creation**: Create groups on all cluster nodes and verify their existence.
