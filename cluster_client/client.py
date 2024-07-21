@@ -136,6 +136,9 @@ class ClusterClient:
                 logger.error(f'Error during rollback on {host}: {e}')
                 undeleted_hosts.append(host)
 
+        if len(undeleted_hosts) == 0:
+            logger.info('Roll back performed successfully.')
+
         return undeleted_hosts
 
     async def create_group(self, group_id: str) -> bool:
