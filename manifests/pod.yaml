@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: robust-httpx-client-pod
+  labels:
+    app: robust-httpx-client
+spec:
+  containers:
+  - name: robust-httpx-client
+    image: ehsanmgh/robust-httpx-client:latest
+    envFrom:
+    - configMapRef:
+        name: robust-httpx-client-config
+  restartPolicy: Never
