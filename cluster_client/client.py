@@ -132,8 +132,8 @@ class ClusterClient:
                         logger.error(f'Group {group_id} still exists on {host} after rollback attempt')
                         undeleted_hosts.append(host)
 
-            except RequestErrorException as e:
-                logger.error(f'Error during rollback on {host}: {e}')
+            except RequestErrorException as exc:
+                logger.error(f'Error during rollback on {host}: {exc}')
                 undeleted_hosts.append(host)
 
         if len(undeleted_hosts) == 0:
@@ -163,8 +163,8 @@ class ClusterClient:
                     if not await self._verify_group_on_host(client, host, group_id):
                         raise GroupOperationException(f'Failed to verify group on {host}, initiating rollback.')
 
-            except Exception as e:
-                logger.error(f'Error during group creation. Detail: {e}')
+            except Exception as exc:
+                logger.error(f'Error during group creation. Detail: {exc}')
 
                 if success_hosts:
                     undeleted_hosts = await self._rollback_creation(client, group_id, success_hosts)
@@ -192,8 +192,8 @@ class ClusterClient:
                         logger.warning(f'Deletion failed on host {host}')
                         continue
                     undeleted_hosts.remove(host)
-                except Exception as e:
-                    logger.error(f'Error during deletion on host {host}: {e}')
+                except Exception as exc:
+                    logger.error(f'Error during deletion on host {host}: {exc}')
                     continue
 
         return undeleted_hosts
