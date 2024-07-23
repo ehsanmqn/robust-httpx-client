@@ -158,7 +158,8 @@ These commands will execute the tests and provide detailed output, helping you v
 
 ## Regarding the implementation
 
-Eventual consistency is defined as the state where, given enough time, a consistent state will be achieved by all nodes in a distributed system. The code is designed to maintain eventual consistency across a cluster of hosts by ensuring that operations (creating or deleting a group) are attempted on each host. If any operation fails, corrective actions are taken to restore the system to a consistent state.
+ClusterClient is designed to maintain eventual consistency across a cluster of hosts by ensuring that operations (creating or deleting a group) are attempted on each host. If any operation fails, corrective actions are taken to restore the system to a consistent state.
+
 ### Eventual Consistency
 
 **Eventual Consistency** means that, given enough time, all nodes in a distributed system will achieve a consistent state. This code aims to maintain eventual consistency across a cluster of hosts by ensuring that operations (creating or deleting a group) are attempted on each host, and if any operation fails, corrective actions are taken to bring the system back to a consistent state.
@@ -166,9 +167,11 @@ Eventual consistency is defined as the state where, given enough time, a consist
 1. **Consistency During Group Creation:**
    When creating a group (`create_group` method), if the creation fails on any host, a rollback is initiated (`_rollback_creation` method) to delete the group from the hosts where it was successfully created. This ensures that all hosts either have the group created or none of them do, achieving a consistent state.
 
+   After all creation attempts, the there is a creation verification section that verifies if the group was successfully created on each host. This section has implemented to increase consistency across nodes. Although additional GET requests add extra load and can impact system performance, especially under high traffic, they help identify if the creation failed silently or if the POST request was partially successful.
 2. **Consistency During Group Deletion:**
    When deleting a group (`delete_group` method), the method ensures that an attempt is made to delete the group from all hosts, regardless of the outcome of each attempt. This ensures that eventually, all hosts will not have the group.
-
+   
+   After all deletion attempts, a verification section ensures the group has been successfully deleted from each host. This section is implemented to increase consistency across nodes. Although additional GET requests add extra load and can impact system performance, especially under high traffic, they help identify if the deletion failed silently or if the DELETE request was only partially successful.
 ### Retry Mechanism
 
 The **Retry Mechanism** involves retrying an operation a specified number of times before giving up, often with an increasing delay between attempts (exponential backoff) to handle transient errors and reduce the load on the system.
@@ -193,7 +196,3 @@ Consider the following scenario for creating a group:
 3. During the group creation on each host, if a transient error occurs (e.g., server error, rate limit exceeded), the operation is retried up to three times with an exponential backoff.
 
 This approach ensures that despite temporary failures and inconsistencies, the system will eventually reach a consistent state where either all hosts have the group or none of them do.
-
-### Conclusion
-
-In summary, this repository exemplifies the Eventual Consistency with Retry Mechanism by ensuring that operations are consistently applied across a distributed system with retries to handle transient failures, ultimately leading to a consistent state across all nodes.
