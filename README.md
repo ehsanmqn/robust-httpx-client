@@ -1,10 +1,11 @@
 # ClusterClient
 
-The `ClusterClient` is a Python class designed to manage group creation and deletion across multiple cluster nodes. It uses asynchronous HTTP requests to perform operations on cluster nodes and includes robust retry mechanisms with exponential backoff to handle transient errors.
+The `ClusterClient` is a Python class designed to manage group creation and deletion across multiple cluster nodes. It uses asynchronous HTTP requests to perform operations on cluster nodes and includes robust retry mechanisms with exponential backoff to handle transient errors (e.g., server error, rate limit exceeded).
 
+## NOTE
 The coding challenge has been implemented in two versions:
 
-- **This repository:** Implemented according to principles of the Eventual Consistency with Retry Mechanism design pattern and includes all coding challenge requirements, such as unit tests, a Dockerfile, and K8s manifests.
+- **This repository:** Implemented according to principles of the [Eventual Consistency enhanced with Retry Mechanism](#regarding-the-implementation) and includes all coding challenge requirements, such as unit tests, a Dockerfile, and K8s manifests.
 - **[Saga version](https://github.com/ehsanmqn/saga-httpx-client):** Utilizes the Saga design pattern.
 
 
@@ -156,7 +157,7 @@ These commands will execute the tests and provide detailed output, helping you v
 
 ## Regarding the implementation
 
-This code does embody the principles of the Eventual Consistency with Retry Mechanism design pattern. Let's break down how it fits into this pattern:
+Eventual consistency is defined as the state where, given enough time, a consistent state will be achieved by all nodes in a distributed system. The code is designed to maintain eventual consistency across a cluster of hosts by ensuring that operations (creating or deleting a group) are attempted on each host. If any operation fails, corrective actions are taken to restore the system to a consistent state.
 ### Eventual Consistency
 
 **Eventual Consistency** means that, given enough time, all nodes in a distributed system will achieve a consistent state. This code aims to maintain eventual consistency across a cluster of hosts by ensuring that operations (creating or deleting a group) are attempted on each host, and if any operation fails, corrective actions are taken to bring the system back to a consistent state.
@@ -172,12 +173,12 @@ This code does embody the principles of the Eventual Consistency with Retry Mech
 The **Retry Mechanism** involves retrying an operation a specified number of times before giving up, often with an increasing delay between attempts (exponential backoff) to handle transient errors and reduce the load on the system.
 
 1. **Retries on Transient Errors:**
-   Both `_create_group_on_host` and `_delete_group_on_host` methods are decorated with `@retry` from the `tenacity` library. This decorator ensures that these methods will retry the operation if a `ClusterOperationException` is raised, using an exponential backoff strategy (`wait_exponential`).
+   Both `_create_group_on_host` and `_delete_group_on_host` methods are decorated with `@retry` from the `tenacity` library. This decorator ensures that these methods will retry the operation if a `RequestErrorException` is raised, using an exponential backoff strategy (`wait_exponential`).
 
 2. **Exponential Backoff:**
    The `wait_exponential` parameter specifies that the wait time between retries will grow exponentially, starting with a multiplier of 1 second and capping at 10 seconds. This helps in reducing the likelihood of overwhelming the server with repeated requests in a short time frame.
 
-### Combining Both Patterns
+### Combining Both Techniques
 
 By combining eventual consistency and a retry mechanism, the code ensures that:
 - Operations are attempted multiple times to overcome transient failures.
@@ -194,4 +195,4 @@ This approach ensures that despite temporary failures and inconsistencies, the s
 
 ### Conclusion
 
-In summary, the code exemplifies the Eventual Consistency with Retry Mechanism design pattern by ensuring that operations are consistently applied across a distributed system with retries to handle transient failures, ultimately leading to a consistent state across all nodes.
+In summary, this repository exemplifies the Eventual Consistency with Retry Mechanism by ensuring that operations are consistently applied across a distributed system with retries to handle transient failures, ultimately leading to a consistent state across all nodes.
