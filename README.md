@@ -13,6 +13,7 @@ The coding challenge has been implemented in two versions:
 
 - **Group Creation**: Create groups on all cluster nodes and verify their existence.
 - **Group Deletion**: Delete groups from all cluster nodes and identify nodes where the deletion failed.
+- **Verify Creation**: Verify the existence of a group on a specific host.
 - **Retry Mechanism**: Automatically retries operations with exponential backoff in case of failures.
 - **Rollback on Failure**: Attempts to rollback group creation if any creation or verification step fails.
 
