@@ -8,6 +8,7 @@ spec:
   containers:
   - name: robust-httpx-client
     image: ehsanmgh/robust-httpx-client:latest
+    imagePullPolicy: Always
     envFrom:
     - configMapRef:
         name: robust-httpx-client-config
