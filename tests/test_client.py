@@ -259,3 +259,31 @@ async def test_verify_group_on_host_unexpected_exception():
     with mock.patch.object(httpx.AsyncClient, 'get', side_effect=UnexpectedException('Unexpected error')):
         with pytest.raises(UnexpectedException):
             await client._verify_group_on_host(httpx.AsyncClient(), HOSTS[0], 'test_group')
+
+
+@pytest.mark.asyncio
+async def test_create_group_multiple_requests_with_one_failure():
+    hosts = ["http://node1.example.com", "http://node2.example.com", "http://node3.example.com"]
+
+    client = ClusterClient(hosts=hosts)
+    group_id = "test-group"
+
+    async def mock_post(url):
+        if "node3.example.com" in url:
+            raise httpx.RequestError("Connection error", request=None)
+        return mock.AsyncMock(status_code=201)()
+
+    async def mock_delete():
+        return mock.AsyncMock(status_code=200)()
+
+    async def mock_get(url):
+        if "localhost:8001" in url:
+            return mock.AsyncMock(status_code=404)()
+        return mock.AsyncMock(status_code=200)()
+
+    with mock.patch('httpx.AsyncClient.post', new=mock_post), \
+            mock.patch('httpx.AsyncClient.request', new=mock_delete), \
+            mock.patch('httpx.AsyncClient.get', new=mock_get):
+
+        success = await client.create_group(group_id)
+        assert not success
