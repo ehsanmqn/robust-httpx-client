@@ -277,7 +277,7 @@ async def test_create_group_multiple_requests_with_one_failure():
         return mock.AsyncMock(status_code=200)()
 
     async def mock_get(url):
-        if "localhost:8001" in url:
+        if "node3.example.com" in url:
             return mock.AsyncMock(status_code=404)()
         return mock.AsyncMock(status_code=200)()
 
@@ -287,3 +287,28 @@ async def test_create_group_multiple_requests_with_one_failure():
 
         success = await client.create_group(group_id)
         assert not success
+
+
+@pytest.mark.asyncio
+async def test_create_group_success_but_verification_fails(caplog):
+    hosts = ["http://node1.example.com", "http://node2.example.com", "http://node3.example.com"]
+
+    client = ClusterClient(hosts=hosts)
+    group_id = "test-group"
+
+    async def mock_post(url, json=None, timeout=None):
+        return mock.AsyncMock(status_code=201)()
+
+    async def mock_delete(url, json=None, timeout=None):
+        return mock.AsyncMock(status_code=200)()
+
+    async def mock_get(url, timeout=None):
+        return mock.AsyncMock(status_code=404)()
+
+    with mock.patch('httpx.AsyncClient.post', new=mock_post), \
+            mock.patch('httpx.AsyncClient.request', new=mock_delete), \
+            mock.patch('httpx.AsyncClient.get', new=mock_get):
+        success = await client.create_group(group_id)
+        assert not success
+
+    assert "Error during group creation. Detail:" in caplog.text
