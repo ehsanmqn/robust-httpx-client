@@ -119,6 +119,7 @@ docker build -t robust-httpx-client .
 docker run --network="host" -it --rm robust-httpx-client
 ```
 
+The image has already been built and pushed to the [Dockerhub repository](https://hub.docker.com/repository/docker/ehsanmgh/robust-httpx-client/general)
 ## Kubernetes
 
 Kubernetes manifests are available in the `manifest` folder. The `main.py` script is configured to run only once without any triggering options, so using a Pod is sufficient to run the container. Follow these steps to run the Pod:
