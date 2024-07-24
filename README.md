@@ -156,6 +156,13 @@ pytest -s tests/test_concurrency.py
 
 These commands will execute the tests and provide detailed output, helping you verify that the `ClusterClient` handles various scenarios and exceptions appropriately, including retries, error handling, and concurrency issues.
 
+## Configuration
+
+The HOSTS list can be configured in the config module to specify the cluster of hosts, or it can be set through environment variables.
+
+```shell
+export HOSTS="http://localhost:8000,http://localhost:8001,http://localhost:8002"
+```
 
 ## Regarding the implementation
 
